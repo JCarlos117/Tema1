@@ -1,0 +1,10 @@
+{
+  "refacciones": [
+    {
+      "id": "ace8",
+      "nombre": "bujia",
+      "categoria": "Transmision",
+      "precio": "1"
+    }
+  ]
+}
