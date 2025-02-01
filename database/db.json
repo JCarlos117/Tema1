@@ -1,10 +1,16 @@
 {
   "refacciones": [
     {
-      "id": "ace8",
+      "id": "e275",
       "nombre": "bujia",
-      "categoria": "Transmision",
-      "precio": "1"
+      "categoria": "Motor",
+      "precio": "23"
+    },
+    {
+      "id": "312b",
+      "nombre": "bujia",
+      "categoria": "Motor",
+      "precio": "232"
     }
   ]
 }

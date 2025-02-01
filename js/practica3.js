@@ -1,7 +1,6 @@
-// Función para cargar las refacciones a la tabla
 function cargarRefacciones() {
     const xhr = new XMLHttpRequest();
-    xhr.open('GET', 'http://localhost:3001/refacciones', true); // Asegúrate de que el puerto sea correcto.
+    xhr.open('GET', 'http://localhost:3001/refacciones', true);
 
     xhr.onload = function () {
         if (xhr.status === 200) {
@@ -15,116 +14,144 @@ function cargarRefacciones() {
                     <td>${refaccion.nombre}</td>
                     <td>${refaccion.categoria}</td>
                     <td>${refaccion.precio}</td>
-                    <td>
-                        <button onclick="mostrarModal('${refaccion.id}', '${refaccion.nombre}', '${refaccion.categoria}', '${refaccion.precio}')">Editar</button> |
+                    <td class="actions">
+                        <button onclick="editarRefaccion('${refaccion.id}')">Editar</button>
                         <button onclick="eliminarRefaccion('${refaccion.id}')">Eliminar</button>
                     </td>
                 `;
                 tbody.appendChild(row);
             });
         } else {
-            console.error('Error al cargar las refacciones:', xhr.statusText);
+            console.error('Error al cargar las refacciones');
         }
     };
+
+    xhr.onerror = function () {
+        console.error('Error de conexión con el servidor');
+    };
+
     xhr.send();
 }
 
-// Función para agregar una refacción a la BD
 document.getElementById('refaccion-form').addEventListener('submit', function (e) {
     e.preventDefault();
+
     const nombre = document.getElementById('nombre').value;
     const categoria = document.getElementById('categoria').value;
     const precio = document.getElementById('precio').value;
 
+    if (!nombre || !categoria || !precio) {
+        alert('Todos los campos son obligatorios.');
+        return;
+    }
+
     const refaccion = {
-        nombre,
-        categoria,
-        precio
+        nombre: nombre,
+        categoria: categoria,
+        precio: parseFloat(precio),
     };
 
     const xhr = new XMLHttpRequest();
     xhr.open('POST', 'http://localhost:3001/refacciones', true);
     xhr.setRequestHeader('Content-Type', 'application/json');
-
     xhr.onload = function () {
         if (xhr.status === 201) {
-            document.getElementById('refaccion-form').reset();
+            console.log('Refacción agregada correctamente');
             cargarRefacciones();
+            document.getElementById('refaccion-form').reset();
         } else {
-            console.error('Error al agregar la refacción:', xhr.statusText);
+            console.error('Error al agregar la refacción');
         }
+    };
+    xhr.onerror = function () {
+        console.error('Error de conexión con el servidor');
     };
     xhr.send(JSON.stringify(refaccion));
 });
 
-// Función para eliminar una refacción
 function eliminarRefaccion(id) {
-    const xhr = new XMLHttpRequest();
-    xhr.open('DELETE', 'http://localhost:3001/refacciones/${id}', true);
+    if (!id) {
+        console.error('ID inválido para eliminar refacción');
+        return;
+    }
 
+    const xhr = new XMLHttpRequest();
+    xhr.open('DELETE', `http://localhost:3001/refacciones/${id}`, true);
     xhr.onload = function () {
-        if (xhr.status === 200) {
+        if (xhr.status === 200 || xhr.status === 204) {
+            console.log('Refacción eliminada correctamente');
             cargarRefacciones();
         } else {
-            console.error('Error al eliminar la refacción:', xhr.statusText);
+            console.error(`Error al eliminar la refacción: ${xhr.responseText}`);
         }
+    };
+    xhr.onerror = function () {
+        console.error('Error de conexión con el servidor');
     };
     xhr.send();
 }
 
-// Mostrar el modal y rellenar datos
-function mostrarModal(id, nombre, categoria, precio) {
-    document.getElementById('update-nombre').value = nombre;
-    document.getElementById('update-categoria').value = categoria;
-    document.getElementById('update-precio').value = precio;
-    const modal = document.getElementById('updateModal');
-    modal.setAttribute('data-id', id);
-    modal.style.display = 'block';
-}
-
-// Cerrar el modal al hacer clic en la "X"
-document.getElementById('close-modal').addEventListener('click', function () {
-    document.getElementById('updateModal').style.display = 'none';
-});
-
-// Cerrar el modal al hacer clic fuera de él
-window.onclick = function (event) {
-    const modal = document.getElementById('updateModal');
-    if (event.target === modal) {
-        modal.style.display = 'none';
+function editarRefaccion(id) {
+    if (!id) {
+        console.error('ID inválido para editar refacción');
+        return;
     }
-};
-
-// Actualizar artículo desde el modal
-document.getElementById('updateRefaccion-form').addEventListener('submit', function (e) {
-    e.preventDefault();
-
-    const id = document.getElementById('updateModal').getAttribute('data-id');
-    const nombre = document.getElementById('update-nombre').value;
-    const categoria = document.getElementById('update-categoria').value;
-    const precio = document.getElementById('update-precio').value;
-
-    const updatedRefaccion = {
-        nombre,
-        categoria,
-        precio
-    };
-
     const xhr = new XMLHttpRequest();
-    xhr.open('PATCH', `http://localhost:3001/refacciones/${id}`, true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-
+    xhr.open('GET', `http://localhost:3001/refacciones/${id}`, true);
     xhr.onload = function () {
         if (xhr.status === 200) {
-            cargarRefacciones();
-            document.getElementById('updateModal').style.display = 'none';
+            const refaccion = JSON.parse(xhr.responseText);
+            document.getElementById('update-nombre').value = refaccion.nombre;
+            document.getElementById('update-categoria').value = refaccion.categoria;
+            document.getElementById('update-precio').value = refaccion.precio;
+            document.getElementById('update-id').value = refaccion.id;
         } else {
-            console.error('Error al actualizar refacción:', xhr.statusText);
+            console.error(`Error al cargar la refacción: ${xhr.responseText}`);
         }
     };
-    xhr.send(JSON.stringify(updatedRefaccion));
-});
+    xhr.onerror = function () {
+        console.error('Error de conexión con el servidor');
+    };
+    xhr.send();
+    const modal = document.getElementById('updateModal');
+    modal.style.display = 'block';
+    document.getElementById('update-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const nombre = document.getElementById('update-nombre').value;
+        const categoria = document.getElementById('update-categoria').value;
+        const precio = document.getElementById('update-precio').value;
+        if (!nombre ||!categoria ||!precio) {
+            alert('Todos los campos son obligatorios.');
+            return;
+        }
+        const refaccion = {
+            nombre: nombre,
+            categoria: categoria,
+            precio: parseFloat(precio),
+        };
+        const xhr = new XMLHttpRequest();
+        xhr.open('PUT', `http://localhost:3001/refacciones/${document.getElementById('update-id').value}`, true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                console.log('Refacción actualizada correctamente');
+                cargarRefacciones();
+                closeModal();
+            } else {
+                console.error(`Error al actualizar la refacción: ${xhr.responseText}`);
+            }
+        };
+        xhr.onerror = function () {
+            console.error('Error de conexión con el servidor');
+        };
+        xhr.send(JSON.stringify(refaccion));
+    });
+}
 
+function closeModal() {
+    const modal = document.getElementById('updateModal');
+    modal.style.display = 'none';
+}
 
-// Cargar las refacciones al iniciar la página
+// Cargar refacciones al inicio
 cargarRefacciones();
