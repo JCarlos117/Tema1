@@ -11,6 +11,12 @@
       "nombre": "bujia",
       "categoria": "Motor",
       "precio": "232"
+    },
+    {
+      "id": "18f9",
+      "nombre": "bujia",
+      "categoria": "Motor",
+      "precio": "2343"
     }
   ]
 }
