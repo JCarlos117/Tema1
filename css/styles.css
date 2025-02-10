@@ -121,6 +121,62 @@ table th {
       opacity: 0;
   }
   to {
-      opacity: 1;
-  }
+    opacity: 1;
 }
+}
+
+/* Aplicar la fuente Roboto a todo el documento */
+body,
+h1,
+h2,
+button {
+  font-family: "Roboto", sans-serif;
+}
+
+/* Modernización de botones: redondeados, colores planos y transiciones */
+.ui-btn,
+button {
+  border-radius: 25px !important;
+  background-color: #3498db !important;
+  border: none !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+  color: #fff !important;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 10px 20px !important;
+  margin: 10px 0 !important;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.ui-btn:hover,
+button:hover {
+  background-color: #2980b9 !important;
+}
+
+.ui-btn:active,
+button:active {
+  background-color: #1c5980 !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Estilos para header y footer */
+[data-role="header"],
+[data-role="footer"] {
+  background-color: #2c3e50 !important;
+  color: #ecf0f1 !important;
+  text-align: center;
+  padding: 10px 0;
+}
+
+/* Estilo para el área de contenido */
+[data-role="content"] {
+  padding: 20px;
+  background-color: #ecf0f1;
+}
+
+/* Centramos y limitamos el ancho del contenido principal */
+section {
+  max-width: 500px;
+  margin: 0 auto;
+}
+

@@ -1,7 +1,7 @@
 // Función para cargar las refacciones a la tabla
 function cargarRefacciones() {
     $.ajax({
-      url: "http://localhost:3001/refacciones",
+      url: "https://tema1.onrender.com/refacciones",
       method: "GET",
       success: function (data) {
         const tbody = $("#refacciones-tbody");
@@ -39,7 +39,7 @@ function cargarRefacciones() {
       };
   
       $.ajax({
-        url: "http://localhost:3001/refacciones",
+        url: "https://tema1.onrender.com/refacciones",
         method: "POST",
         data: JSON.stringify(refaccion),
         contentType: "application/json",
@@ -58,7 +58,7 @@ function cargarRefacciones() {
   // Función para eliminar una refacción
   function eliminarRefaccion(id) {
     $.ajax({
-      url: `http://localhost:3001/refacciones/${id}`,
+      url: `https://tema1.onrender.com/refacciones/${id}`,
       method: "DELETE",
       success: function () {
         cargarRefacciones();
@@ -83,7 +83,7 @@ function cargarRefacciones() {
         precio: $("#update-precio").val(),
       };
       $.ajax({
-        url: `http://localhost:3001/refacciones/${id}`,
+        url: `https://tema1.onrender.com/refacciones/${id}`,
         method: "PATCH",
         data: JSON.stringify(updatedRefaccion),
         contentType: "application/json",
@@ -103,3 +103,103 @@ function cargarRefacciones() {
   $(document).on('pageinit', function () {
     cargarRefacciones();
   });
+
+  // js/jscript.js
+
+$(document).ready(function () {
+  // Redirige a la vista de inicio de sesión
+  $("#login-btn").on("click", function () {
+    window.location.href = "login.html";
+  });
+
+  // Redirige a la vista de registro
+  $("#register-btn").on("click", function () {
+    window.location.href = "registro.html";
+  });
+});
+
+
+$(document).ready(function () {
+  // Funcionalidad para el formulario de registro
+  if ($("#register-form").length > 0) {
+    $("#register-form").on("submit", function (e) {
+      e.preventDefault();
+
+      // Obtener los datos del formulario
+      var name = $("#name").val();
+      var email = $("#email").val();
+      var password = $("#password").val();
+      var confirmPassword = $("#confirm-password").val();
+
+      // Validar que las contraseñas coincidan
+      if (password !== confirmPassword) {
+        alert("Las contraseñas no coinciden.");
+        return;
+      }
+
+      // Crear el objeto usuario
+      var user = {
+        name: name,
+        email: email,
+        password: password
+      };
+
+      // Obtener los usuarios almacenados en localStorage
+      var users = localStorage.getItem("users");
+      if (users) {
+        users = JSON.parse(users);
+      } else {
+        users = [];
+      }
+
+      // Verificar si el usuario ya está registrado (por ejemplo, usando el correo electrónico)
+      var userExists = users.find(function (u) {
+        return u.email === email;
+      });
+      if (userExists) {
+        alert("El usuario ya está registrado.");
+        return;
+      }
+
+      // Agregar el nuevo usuario y guardarlo en localStorage
+      users.push(user);
+      localStorage.setItem("users", JSON.stringify(users));
+
+      alert("Registro exitoso. Ahora puede iniciar sesión.");
+      // Opcional: redirigir a la página de inicio de sesión
+      window.location.href = "login.html";
+    });
+  }
+
+  // Funcionalidad para el formulario de inicio de sesión
+  if ($("#login-form").length > 0) {
+    $("#login-form").on("submit", function (e) {
+      e.preventDefault();
+
+      // Obtener las credenciales del formulario
+      var email = $("#username").val();
+      var password = $("#password").val();
+
+      // Obtener los usuarios almacenados en localStorage
+      var users = localStorage.getItem("users");
+      if (users) {
+        users = JSON.parse(users);
+      } else {
+        users = [];
+      }
+
+      // Buscar un usuario que coincida con las credenciales
+      var validUser = users.find(function (u) {
+        return u.email === email && u.password === password;
+      });
+
+      if (validUser) {
+        alert("Inicio de sesión exitoso.");
+        // Redirigir a la página principal o al dashboard
+        window.location.href = "index.html";
+      } else {
+        alert("Credenciales incorrectas. Inténtelo nuevamente.");
+      }
+    });
+  }
+});
