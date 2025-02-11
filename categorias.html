@@ -78,7 +78,7 @@
       // Función para cargar las categorías en la tabla
       function cargarCategorias() {
         $.ajax({
-          url: "http://localhost:3001/categorias",
+          url: "https://tema1.onrender.com/refacciones",
           method: "GET",
           success: function (data) {
             var tbody = $("#categorias-tbody");
@@ -112,7 +112,7 @@
           descripcion: $("#descripcion_categoria").val().trim()
         };
         $.ajax({
-          url: "http://localhost:3001/categorias",
+          url: "https://tema1.onrender.com/refacciones",
           method: "POST",
           data: JSON.stringify(categoria),
           contentType: "application/json",
@@ -130,7 +130,7 @@
       // Eliminar una categoría
       function eliminarCategoria(id) {
         $.ajax({
-          url: "http://localhost:3001/categorias/" + id,
+          url: "https://tema1.onrender.com/refacciones/" + id,
           method: "DELETE",
           success: function() {
             cargarCategorias();
@@ -152,7 +152,7 @@
             descripcion: $("#update-descripcion_categoria").val().trim()
           };
           $.ajax({
-            url: "http://localhost:3001/categorias/" + id,
+            url: "https://tema1.onrender.com/refacciones/" + id,
             method: "PATCH",
             data: JSON.stringify(updatedCategoria),
             contentType: "application/json",

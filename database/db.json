@@ -44,17 +44,6 @@
       "historial_precios": "4000",
       "ubicacion_almacen": "Almacen 3",
       "estado_disponibilidad": "Disponible"
-    },
-    {
-      "id": "34ab",
-      "nombre": "bomba",
-      "categoria_id": "c1",
-      "precio": "3000",
-      "stock_disponible": "2",
-      "proveedor": "jesus",
-      "historial_precios": "5444",
-      "ubicacion_almacen": "Almacen 3",
-      "estado_disponibilidad": "Agotado"
     }
   ]
 }
