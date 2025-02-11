@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestión de Categorías</title>
+    <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+    <link rel="stylesheet" href="css/styles.css" />
+    <!-- Google Fonts: Roboto -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div data-role="page" id="categorias-page">
+      <div data-role="header">
+        <h1>Gestión de Categorías</h1>
+      </div>
+      <div data-role="content">
+        <!-- Formulario para agregar categoría -->
+        <section class="form-section">
+          <h2>Agregar Categoría</h2>
+          <form id="categoria-form">
+            <label for="nombre_categoria">Nombre de la Categoría:</label>
+            <input type="text" id="nombre_categoria" name="nombre_categoria" required />
+            
+            <label for="descripcion_categoria">Descripción:</label>
+            <input type="text" id="descripcion_categoria" name="descripcion_categoria" required />
+            
+            <button type="submit" data-role="button" data-theme="b">Agregar Categoría</button>
+          </form>
+        </section>
+        
+        <!-- Listado de categorías -->
+        <section class="list-section">
+          <h2>Listado de Categorías</h2>
+          <table id="categorias-table" data-role="table" class="ui-responsive">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="categorias-tbody"></tbody>
+          </table>
+        </section>
+        
+        <!-- Modal para editar categoría -->
+        <div id="updateCategoriaModal" data-role="popup" class="ui-content" style="max-height: 400px;">
+          <div class="modal-content">
+            <h2>Editar Categoría</h2>
+            <form id="updateCategoria-form">
+              <label for="update-nombre_categoria">Nombre:</label>
+              <input type="text" id="update-nombre_categoria" name="update-nombre_categoria" required />
+              
+              <label for="update-descripcion_categoria">Descripción:</label>
+              <input type="text" id="update-descripcion_categoria" name="update-descripcion_categoria" required />
+              
+              <button type="submit" data-role="button" data-theme="b">Guardar cambios</button>
+            </form>
+            <a href="#" data-role="button" data-rel="back" data-theme="b">Cerrar</a>
+          </div>
+        </div>
+        
+        <!-- Botón para regresar a la gestión de refacciones -->
+        <a href="index.html" data-role="button" data-theme="b">Volver a Refacciones</a>
+      </div>
+      
+      <div data-role="footer">
+        <h1>Gestión de Categorías</h1>
+      </div>
+    </div>
+    
+    <!-- Carga de scripts -->
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+    <script>
+      // Función para cargar las categorías en la tabla
+      function cargarCategorias() {
+        $.ajax({
+          url: "http://localhost:3001/categorias",
+          method: "GET",
+          success: function (data) {
+            var tbody = $("#categorias-tbody");
+            tbody.empty();
+            data.forEach(function(categoria) {
+              var row = `
+                <tr>
+                  <td>${categoria.id}</td>
+                  <td>${categoria.nombre}</td>
+                  <td>${categoria.descripcion}</td>
+                  <td>
+                    <a href="#updateCategoriaModal" data-rel="popup" data-transition="pop" onclick="mostrarModalCategoria('${categoria.id}', '${categoria.nombre}', '${categoria.descripcion}')">Editar</a>
+                    <a href="#" onclick="eliminarCategoria('${categoria.id}')">Eliminar</a>
+                  </td>
+                </tr>
+              `;
+              tbody.append(row);
+            });
+          },
+          error: function(xhr, status, error) {
+            console.error("Error al cargar las categorías:", error);
+          }
+        });
+      }
+      
+      // Agregar una categoría
+      $("#categoria-form").on("submit", function(e) {
+        e.preventDefault();
+        var categoria = {
+          nombre: $("#nombre_categoria").val().trim(),
+          descripcion: $("#descripcion_categoria").val().trim()
+        };
+        $.ajax({
+          url: "http://localhost:3001/categorias",
+          method: "POST",
+          data: JSON.stringify(categoria),
+          contentType: "application/json",
+          dataType: "json",
+          success: function(data) {
+            $("#categoria-form")[0].reset();
+            cargarCategorias();
+          },
+          error: function(err) {
+            console.error("Error al agregar la categoría:", err);
+          }
+        });
+      });
+      
+      // Eliminar una categoría
+      function eliminarCategoria(id) {
+        $.ajax({
+          url: "http://localhost:3001/categorias/" + id,
+          method: "DELETE",
+          success: function() {
+            cargarCategorias();
+          },
+          error: function(err) {
+            console.error("Error al eliminar la categoría:", err);
+          }
+        });
+      }
+      
+      // Mostrar el modal para editar una categoría y enviar la actualización
+      function mostrarModalCategoria(id, nombre, descripcion) {
+        $("#update-nombre_categoria").val(nombre);
+        $("#update-descripcion_categoria").val(descripcion);
+        $("#updateCategoria-form").off("submit").on("submit", function(e) {
+          e.preventDefault();
+          var updatedCategoria = {
+            nombre: $("#update-nombre_categoria").val().trim(),
+            descripcion: $("#update-descripcion_categoria").val().trim()
+          };
+          $.ajax({
+            url: "http://localhost:3001/categorias/" + id,
+            method: "PATCH",
+            data: JSON.stringify(updatedCategoria),
+            contentType: "application/json",
+            dataType: "json",
+            success: function() {
+              cargarCategorias();
+              $("#updateCategoriaModal").popup("close");
+            },
+            error: function(err) {
+              console.error("Error al actualizar la categoría:", err);
+            }
+          });
+        });
+      }
+      
+      // Cargar las categorías al iniciar la página
+      $(document).on("pageinit", function() {
+        cargarCategorias();
+      });
+    </script>
+  </body>
+</html>

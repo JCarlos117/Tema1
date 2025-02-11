@@ -1,28 +1,60 @@
 {
+  "categorias": [
+    {
+      "id": "c1",
+      "nombre": "Motor",
+      "descripcion": "Refacciones relacionadas con el motor del vehículo."
+    },
+    {
+      "id": "c2",
+      "nombre": "Transmisión",
+      "descripcion": "Componentes relacionados con la transmisión del vehículo."
+    }
+  ],
   "refacciones": [
     {
       "id": "e275",
       "nombre": "bujia",
-      "categoria": "Motor",
+      "categoria_id": "c1",
       "precio": "23",
       "stock_disponible": 50,
-      "proveedor": "Provedo1",
-      "historial_precios":2024,
+      "proveedor": "Proveedor1",
+      "historial_precios": 2024,
       "ubicacion_almacen": "Almacen1",
       "estado_disponibilidad": "Disponible"
     },
     {
       "id": "312b",
       "nombre": "bujia",
-      "categoria": "Motor",
+      "categoria_id": "c1",
       "precio": "232",
       "stock_disponible": 0,
-      "proveedor": "provedor2",
-      "historial_precios":2023,
-      "ubicacion_almacen": "almacen2",
+      "proveedor": "Proveedor2",
+      "historial_precios": 2023,
+      "ubicacion_almacen": "Almacen2",
+      "estado_disponibilidad": "Agotado"
+    },
+    {
+      "id": "ab39",
+      "nombre": "bomba de combustible",
+      "categoria_id": "c1",
+      "precio": "8000",
+      "stock_disponible": "15",
+      "proveedor": "jesus",
+      "historial_precios": "4000",
+      "ubicacion_almacen": "Almacen 3",
+      "estado_disponibilidad": "Disponible"
+    },
+    {
+      "id": "34ab",
+      "nombre": "bomba",
+      "categoria_id": "c1",
+      "precio": "3000",
+      "stock_disponible": "2",
+      "proveedor": "jesus",
+      "historial_precios": "5444",
+      "ubicacion_almacen": "Almacen 3",
       "estado_disponibilidad": "Agotado"
     }
-
   ]
-
 }

@@ -4,18 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gestión de refacciones</title>
-    <link
-      rel="stylesheet"
-      href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css"
-    />
+    <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
     <link rel="stylesheet" href="css/styles.css" />
-
     <!-- Google Fonts: Roboto -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
-      rel="stylesheet"
-    />
-    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
   </head>
   <body>
     <div data-role="page" id="home-page">
@@ -23,27 +15,42 @@
         <h1>Gestión de refacciones para motocicletas</h1>
       </div>
       <div data-role="content">
-        <!-- Formulario para agregar refacciones -->
+        <!-- Formulario para agregar refacción -->
         <section class="form-section">
           <h2>Agregar refacción</h2>
           <form id="refaccion-form">
             <label for="nombre">Nombre:</label>
             <input type="text" id="nombre" name="nombre" required />
-            <label for="nombre">Provedor:</label>
-            <input type="text" id="provedor" name="provedor" required />
-            <label for="Stock_disponible">Cantidad:</label>
-            <input type="number" id="Stock_disponible" name="Stock_disponible" required />
+            
+            <label for="proveedor">Proveedor:</label>
+            <input type="text" id="proveedor" name="proveedor" required />
+            
+            <label for="stock_disponible">Cantidad:</label>
+            <input type="number" id="stock_disponible" name="stock_disponible" required />
+            
             <label for="categoria">Categoría:</label>
+            <!-- Se cargarán las categorías dinámicamente -->
             <select id="categoria" name="categoria" required>
-              <option value="">Seleccione una categoría</option>
-              <option value="Motor">Motor</option>
-              <option value="Transmision">Transmisión</option>
-              <option value="Frenos">Frenos</option>
+              <option value="">Cargando categorías...</option>
             </select>
+            
             <label for="precio">Precio:</label>
             <input type="number" id="precio" name="precio" min="0" required />
+            
+            <label for="historial_precios">Historial de precios:</label>
+            <input type="number" id="historial_precios" name="historial_precios" required />
+            
+            <label for="ubicacion_almacen">Ubicación del producto:</label>
+            <input type="text" id="ubicacion_almacen" name="ubicacion_almacen" required />
+            
+            <label for="estado_disponibilidad">Estado de disponibilidad:</label>
+            <select id="estado_disponibilidad" name="estado_disponibilidad" required>
+              <option value="Disponible">Disponible</option>
+              <option value="Agotado">Agotado</option>
+            </select>
+            
             <button type="submit" data-role="button" data-theme="b">Agregar refacción</button>
-            <button type="submit" data-role="button" data-theme="b"></button>
+            <a href="categorias.html" data-role="button" data-theme="b">Gestionar Categorías</a>
           </form>
         </section>
         
@@ -57,11 +64,10 @@
                 <th>Categoría</th>
                 <th>Precio</th>
                 <th>Stock</th>
-                <th>proveedor</th>
-                <th>historial de precios</th>
-                <th>ubicacion de almacen</th>
-                <th>disponibiilidad</th>
-                
+                <th>Proveedor</th>
+                <th>Historial de precios</th>
+                <th>Ubicación de Almacén</th>
+                <th>Disponibilidad</th>
                 <th>Acciones</th>
               </tr>
             </thead>
@@ -69,7 +75,7 @@
           </table>
           <button id="reset-btn" data-role="button" data-theme="b">Limpiar Lista</button>
         </section>
-
+        
         <!-- Modal para editar refacciones -->
         <div id="updateModal" data-role="popup" class="ui-content" style="max-height: 400px;">
           <div class="modal-content">
@@ -77,31 +83,172 @@
             <form id="updateRefaccion-form">
               <label for="update-nombre">Nombre:</label>
               <input type="text" id="update-nombre" name="update-nombre" required />
+              
               <label for="update-categoria">Categoría:</label>
+              <!-- Se actualizará dinámicamente -->
               <select id="update-categoria" name="update-categoria" required>
-                <option value="">Seleccione una categoría</option>
-                <option value="Motor">Motor</option>
-                <option value="Transmision">Transmisión</option>
-                <option value="Frenos">Frenos</option>
+                <option value="">Cargando categorías...</option>
               </select>
+              
               <label for="update-precio">Precio:</label>
               <input type="number" id="update-precio" name="update-precio" min="0" required />
+              
               <button type="submit" data-role="button" data-theme="b">Guardar cambios</button>
             </form>
             <a href="#" data-role="button" data-rel="back" data-theme="b">Cerrar</a>
           </div>
         </div>
-
       </div>
-
+      
       <div data-role="footer">
         <h1>Gestión de refacciones</h1>
       </div>
     </div>
-
-    <!-- Carga de scripts en el orden correcto -->
+    
+    <!-- Carga de scripts -->
     <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
-    <script src="js/jscript.js"></script>
+    <script>
+      // Función para cargar refacciones
+      function cargarRefacciones() {
+        $.ajax({
+          url: "http://localhost:3001/refacciones",
+          method: "GET",
+          success: function (data) {
+            var tbody = $("#refacciones-tbody");
+            tbody.empty();
+            data.forEach(function(refaccion) {
+              // Determina el texto a mostrar para la categoría
+              var categoriaText = refaccion.categoria ||
+                  (refaccion.categoria_id === 'c1' ? 'Motor' : 
+                   refaccion.categoria_id === 'c2' ? 'Transmisión' : 
+                   refaccion.categoria_id === 'c3' ? 'Frenos' : refaccion.categoria_id);
+              var row = `
+                <tr>
+                  <td>${refaccion.nombre}</td>
+                  <td>${categoriaText}</td>
+                  <td>${refaccion.precio}</td>
+                  <td>${refaccion.stock_disponible}</td>
+                  <td>${refaccion.proveedor}</td>
+                  <td>${refaccion.historial_precios}</td>
+                  <td>${refaccion.ubicacion_almacen}</td>
+                  <td>${refaccion.estado_disponibilidad}</td>
+                  <td>
+                    <a href="#updateModal" data-rel="popup" data-transition="pop" onclick="mostrarModal('${refaccion.id}', '${refaccion.nombre}', '${refaccion.categoria_id}', '${refaccion.precio}')">Editar</a>
+                    <a href="#" onclick="eliminarRefaccion('${refaccion.id}')">Eliminar</a>
+                  </td>
+                </tr>
+              `;
+              tbody.append(row);
+            });
+          },
+          error: function(xhr, status, error) {
+            console.error("Error al cargar las refacciones:", error);
+          }
+        });
+      }
+      
+      // Función para cargar las categorías en los dropdowns (tanto para agregar como para editar)
+      function loadCategoriesOptions() {
+        $.ajax({
+          url: "http://localhost:3001/categorias",
+          method: "GET",
+          success: function(data) {
+            var options = '<option value="">Seleccione una categoría</option>';
+            data.forEach(function(categoria) {
+              options += `<option value="${categoria.id}">${categoria.nombre}</option>`;
+            });
+            $("#categoria").html(options);
+            $("#update-categoria").html(options);
+          },
+          error: function(err) {
+            console.error("Error al cargar las categorías para el dropdown:", err);
+          }
+        });
+      }
+      
+      // Agregar una refacción
+      $("#refaccion-form").on("submit", function(e) {
+        e.preventDefault();
+        var refaccion = {
+          nombre: $("#nombre").val().trim(),
+          categoria_id: $("#categoria").val(),
+          precio: $("#precio").val(),
+          stock_disponible: $("#stock_disponible").val(),
+          proveedor: $("#proveedor").val().trim(),
+          historial_precios: $("#historial_precios").val(),
+          ubicacion_almacen: $("#ubicacion_almacen").val().trim(),
+          estado_disponibilidad: $("#estado_disponibilidad").val()
+        };
+        $.ajax({
+          url: "http://localhost:3001/refacciones",
+          method: "POST",
+          data: JSON.stringify(refaccion),
+          contentType: "application/json",
+          dataType: "json",
+          success: function() {
+            $("#refaccion-form")[0].reset();
+            cargarRefacciones();
+          },
+          error: function(err) {
+            console.error("Error al agregar la refacción:", err);
+          }
+        });
+      });
+      
+      // Eliminar una refacción
+      function eliminarRefaccion(id) {
+        $.ajax({
+          url: "http://localhost:3001/refacciones/" + id,
+          method: "DELETE",
+          success: function() {
+            cargarRefacciones();
+          },
+          error: function(err) {
+            console.error("Error al eliminar la refacción:", err);
+          }
+        });
+      }
+      
+      // Mostrar el modal para editar refacción
+      function mostrarModal(id, nombre, categoria_id, precio) {
+        $("#update-nombre").val(nombre);
+        $("#update-categoria").val(categoria_id);
+        $("#update-precio").val(precio);
+        $("#updateRefaccion-form").off("submit").on("submit", function(e) {
+          e.preventDefault();
+          var updatedRefaccion = {
+            nombre: $("#update-nombre").val().trim(),
+            categoria_id: $("#update-categoria").val(),
+            precio: $("#update-precio").val()
+          };
+          $.ajax({
+            url: "http://localhost:3001/refacciones/" + id,
+            method: "PATCH",
+            data: JSON.stringify(updatedRefaccion),
+            contentType: "application/json",
+            dataType: "json",
+            success: function() {
+              cargarRefacciones();
+              $("#updateModal").popup("close");
+            },
+            error: function(err) {
+              console.error("Error al actualizar la refacción:", err);
+            }
+          });
+        });
+      }
+      
+      // Inicialización al cargar la página
+      $(document).ready(function() {
+        cargarRefacciones();
+        loadCategoriesOptions();
+      });
+      
+      // Botón para limpiar la lista de refacciones
+      $("#reset-btn").on("click", function() {
+        $("#refacciones-tbody").empty();
+      });
+    </script>
   </body>
 </html>
