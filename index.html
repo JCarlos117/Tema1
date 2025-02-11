@@ -29,6 +29,10 @@
           <form id="refaccion-form">
             <label for="nombre">Nombre:</label>
             <input type="text" id="nombre" name="nombre" required />
+            <label for="nombre">Provedor:</label>
+            <input type="text" id="provedor" name="provedor" required />
+            <label for="Stock_disponible">Cantidad:</label>
+            <input type="number" id="Stock_disponible" name="Stock_disponible" required />
             <label for="categoria">Categoría:</label>
             <select id="categoria" name="categoria" required>
               <option value="">Seleccione una categoría</option>
@@ -39,6 +43,7 @@
             <label for="precio">Precio:</label>
             <input type="number" id="precio" name="precio" min="0" required />
             <button type="submit" data-role="button" data-theme="b">Agregar refacción</button>
+            <button type="submit" data-role="button" data-theme="b"></button>
           </form>
         </section>
         
@@ -51,6 +56,12 @@
                 <th>Nombre</th>
                 <th>Categoría</th>
                 <th>Precio</th>
+                <th>Stock</th>
+                <th>proveedor</th>
+                <th>historial de precios</th>
+                <th>ubicacion de almacen</th>
+                <th>disponibiilidad</th>
+                
                 <th>Acciones</th>
               </tr>
             </thead>
@@ -80,6 +91,7 @@
             <a href="#" data-role="button" data-rel="back" data-theme="b">Cerrar</a>
           </div>
         </div>
+
       </div>
 
       <div data-role="footer">

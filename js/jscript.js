@@ -1,7 +1,7 @@
 // Función para cargar las refacciones a la tabla
 function cargarRefacciones() {
     $.ajax({
-      url: "https://tema1.onrender.com/refacciones",
+      url: "http://localhost:3001/refacciones",
       method: "GET",
       success: function (data) {
         const tbody = $("#refacciones-tbody");
@@ -13,6 +13,11 @@ function cargarRefacciones() {
                       <td>${refaccion.nombre}</td>
                       <td>${refaccion.categoria}</td>
                       <td>${refaccion.precio}</td>
+                      <td>${refaccion.stock_disponible}</td>
+                      <td>${refaccion.proveedor}</td>
+                      <td>${refaccion.historial_precios}</td>
+                      <td>${refaccion.ubicacion_almacen}</td>
+                      <td>${refaccion.estado_disponibilidad}</td>
                       <td>
                           <a href="#updateModal" data-rel="popup" data-transition="pop" onclick="mostrarModal('${refaccion.id}', '${refaccion.nombre}', '${refaccion.categoria}', '${refaccion.precio}')">Editar</a>
                           <a href="#" onclick="eliminarRefaccion('${refaccion.id}')">Eliminar</a>
@@ -36,10 +41,15 @@ function cargarRefacciones() {
         nombre: $('#nombre').val(),
         categoria: $('#categoria').val(),
         precio: $('#precio').val(),
+        stock_disponible: $('#stock_disponible').val(),
+        proveedor: $('#proveedor').val(),
+        historial_precios: $('#historial_precios').val(),
+        ubicacion_almacen: $('#ubicacion_almacen').val(),
+        
       };
   
       $.ajax({
-        url: "https://tema1.onrender.com/refacciones",
+        url: "http://localhost:3001/refacciones",
         method: "POST",
         data: JSON.stringify(refaccion),
         contentType: "application/json",
@@ -58,7 +68,7 @@ function cargarRefacciones() {
   // Función para eliminar una refacción
   function eliminarRefaccion(id) {
     $.ajax({
-      url: `https://tema1.onrender.com/refacciones/${id}`,
+      url: `http://localhost:3001/refacciones/${id}`,
       method: "DELETE",
       success: function () {
         cargarRefacciones();
@@ -83,7 +93,7 @@ function cargarRefacciones() {
         precio: $("#update-precio").val(),
       };
       $.ajax({
-        url: `https://tema1.onrender.com/refacciones/${id}`,
+        url: `http://localhost:3001/refacciones/${id}`,
         method: "PATCH",
         data: JSON.stringify(updatedRefaccion),
         contentType: "application/json",

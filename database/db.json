@@ -1,0 +1,28 @@
+{
+  "refacciones": [
+    {
+      "id": "e275",
+      "nombre": "bujia",
+      "categoria": "Motor",
+      "precio": "23",
+      "stock_disponible": 50,
+      "proveedor": "Provedo1",
+      "historial_precios":2024,
+      "ubicacion_almacen": "Almacen1",
+      "estado_disponibilidad": "Disponible"
+    },
+    {
+      "id": "312b",
+      "nombre": "bujia",
+      "categoria": "Motor",
+      "precio": "232",
+      "stock_disponible": 0,
+      "proveedor": "provedor2",
+      "historial_precios":2023,
+      "ubicacion_almacen": "almacen2",
+      "estado_disponibilidad": "Agotado"
+    }
+
+  ]
+
+}
